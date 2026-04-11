@@ -265,7 +265,7 @@
     <nav class="tab-nav" role="tablist">
       <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="support">サポート</button>
       <button class="tab-btn"        role="tab" aria-selected="false" data-tab="contact">お問い合わせ</button>
-      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="privacy">プライバシーポリシー</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="privacy">プライバシー<br>ポリシー</button>
     </nav>
 
     <main>
@@ -512,16 +512,33 @@
 
   <script>
     const buttons = document.querySelectorAll('.tab-btn');
+
+    function activateTab(tabName) {
+      const validTabs = ['support', 'contact', 'privacy'];
+      const target = validTabs.includes(tabName) ? tabName : 'support';
+
+      buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+      const btn = document.querySelector('.tab-btn[data-tab="' + target + '"]');
+      if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected', 'true'); }
+      const panel = document.getElementById('tab-' + target);
+      if (panel) panel.classList.add('active');
+    }
+
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
-        buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        history.pushState(null, '', '#' + btn.dataset.tab);
+        activateTab(btn.dataset.tab);
       });
     });
+
+    window.addEventListener('hashchange', () => {
+      activateTab(location.hash.slice(1));
+    });
+
+    // 初期表示：URLハッシュに応じてタブを切り替え
+    activateTab(location.hash.slice(1));
   </script>
 
 </body>
