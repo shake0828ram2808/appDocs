@@ -190,6 +190,91 @@
       margin-top: 14px;
     }
 
+    /* ── よくある質問(アコーディオン) ── */
+    .faq-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .faq-group + .faq-group { margin-top: 22px; }
+
+    .faq-cat {
+      font-size: 0.8rem;
+      color: var(--theme);
+      letter-spacing: .08em;
+      margin-bottom: -2px;
+    }
+
+    .faq {
+      background: var(--bg);
+      border-radius: var(--r-sm);
+      box-shadow: var(--sh-inner);
+      overflow: hidden;
+    }
+
+    .faq > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px 16px;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .faq > summary::-webkit-details-marker { display: none; }
+
+    .faq > summary::before {
+      content: "Q";
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      border-radius: 50%;
+      background: var(--theme-lt);
+      color: var(--theme);
+      font-size: 0.65rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 右はしの ▼ (開くと ▲) */
+    .faq > summary::after {
+      content: "";
+      flex-shrink: 0;
+      margin-left: auto;
+      margin-top: 7px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--theme);
+      border-bottom: 2px solid var(--theme);
+      transform: rotate(45deg);
+      transition: transform .2s;
+    }
+
+    .faq[open] > summary::after { transform: rotate(-135deg); margin-top: 10px; }
+
+    .faq > summary:hover { background: rgba(110,139,61,.07); }
+
+    .faq .faq-a {
+      padding: 0 16px 14px 46px;
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.85;
+    }
+
+    .faq .faq-a p + p { margin-top: 8px; }
+
+    @media (max-width: 480px) {
+      .faq > summary { font-size: 0.83rem; padding: 12px 13px; }
+      .faq .faq-a { padding: 0 13px 12px 42px; font-size: 0.82rem; }
+    }
+
     /* ── お問い合わせボタン ── */
     .contact-section {
       text-align: center;
@@ -344,6 +429,9 @@
               <span>機種変更や再インストールのあとは、「せってい」の <strong>「購入を復元」</strong>から元に戻せます。</span>
             </li>
           </ul>
+          <div class="highlight-box">
+            ※ 本アプリの有料機能の購入・返金の手続きおよび条件については、Apple（App Store）の規約・ポリシーに従います。
+          </div>
         </section>
 
         <section class="card">
@@ -374,6 +462,109 @@
 
       <!-- ── お問い合わせタブ ── -->
       <div id="tab-contact" class="tab-panel" role="tabpanel">
+
+        <!-- よくある質問(タップで開く) -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <h2>よくある質問</h2>
+          </div>
+
+          <div class="faq-group">
+            <p class="faq-cat">◆ 料金・アプリ内課金</p>
+
+            <details class="faq">
+              <summary>無料でどこまで遊べますか？</summary>
+              <div class="faq-a">
+                <p>1面から6面までは無料で遊べます。7面から先を遊ぶには、300円（買い切り）の購入が必要です。</p>
+                <p>また、「せってい」の<strong>「はじめからやりなおす」</strong>で記録をリセットすれば、1〜6面を何度でもくり返し遊んでいただけます（購入の記録はリセットされません）。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>課金は1回だけですか？　月額料金はかかりますか？</summary>
+              <div class="faq-a">
+                <p>買い切りの1回だけです。月額・年額などの継続課金（サブスクリプション）は一切ありません。追加のアイテム課金やハートの回復課金もありません。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>子どもが勝手に購入してしまわないか心配です</summary>
+              <div class="faq-a">
+                <p>購入の前に、<strong>おうちの方に確認していただく画面</strong>（かんたんな計算に答える画面）をはさんでいます。お子さまだけで購入まで進めない作りです。</p>
+                <p>さらに安心してお使いいただくには、iPhone・iPadの「設定」から <strong>スクリーンタイム &gt; コンテンツとプライバシーの制限 &gt; アプリ内課金</strong> を「許可しない」にする、または <strong>ファミリー共有の「承認と購入のリクエスト」</strong> をご利用ください。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>機種変更したら、もう一度購入し直しですか？</summary>
+              <div class="faq-a">
+                <p>いいえ。購入したときと<strong>同じApple ID</strong>でサインインしていれば、「せってい」の<strong>「かったのに あそべないとき」→「ふくげん」</strong>から、追加の料金なしで元に戻せます。</p>
+                <p>※ ゲームの進みぐあい（進んだ面・ずかんなど）は端末のなかにだけ保存されるため、機種変更での引き継ぎはできません。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>返金してほしいのですが、どうすればよいですか？</summary>
+              <div class="faq-a">
+                <p>本アプリの有料機能の購入・返金の手続きおよび条件については、<strong>Apple（App Store）の規約・ポリシー</strong>に従います。</p>
+                <p>返金のご依頼は Apple のサポートページ（reportaproblem.apple.com）からお手続きください。当方で直接の返金対応はいたしかねますので、ご了承ください。</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-group">
+            <p class="faq-cat">◆ 遊びかた</p>
+
+            <details class="faq">
+              <summary>ハートがなくなって、面に入れなくなりました</summary>
+              <div class="faq-a">
+                <p>ハートは時間がたつと ぼうけんマップに1つ落ちてきます。だんごむしを歩かせて拾ってください。</p>
+                <p>また、集めた<strong>きのこ5つ・はっぱ10まい</strong>でハート1つと交換できます。「せってい」の「ハートの かず」を<strong>5</strong>にしておくと、より遊びやすくなります。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>「ころがり」がうまくできません</summary>
+              <div class="faq-a">
+                <p>歩いていると力がたまります。たまると、移動スティックの<strong>一回り外に うすい輪</strong>が出てきます。その輪の外まで<strong>スティックを引っぱり出す</strong>と、その向きへ ころがって敵を追いはらえます。</p>
+                <p>輪が出ていないときは、まだ力がたまっていません。少し歩いてからおためしください。ぼうけんマップの<strong>「あそびかた」</strong>から、何度でも練習できます。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>ゴールが出てこなくて、先へ進めません</summary>
+              <div class="faq-a">
+                <p>アリが食べ物をくわえて運んでいる間は、わざとゴールを開けないようにしています。<strong>ころがってアリに当てる</strong>と食べ物を落とすので、拾い直してください。</p>
+                <p>運び去られてしまった場合も、そのぶんは待たずに<strong>ゴールが開きます</strong>（おそくとも1分ほど）。ゴールが開くと、だんごむしからゴールへ光の粒がつながり、ゴールがふわんふわんと光ります。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>子どもには難しいようです。やさしくできますか？</summary>
+              <div class="faq-a">
+                <p>「せってい」→「ほかの せってい」から、<strong>ハートの数を5</strong>に、<strong>もじを「ひらがな」</strong>に変えられます。移動スティックの位置（左右）も、持ちやすいほうに変えられます。</p>
+                <p>また、同じ面で3回つづけてゲームオーバーになると、<strong>「アリをゆっくりにする／へらす」</strong>のお手伝いをおたずねする画面が出ます。</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-group">
+            <p class="faq-cat">◆ 記録・そのほか</p>
+
+            <details class="faq">
+              <summary>遊んだ記録を最初から消したい／記録が消えてしまいました</summary>
+              <div class="faq-a">
+                <p>「せってい」の<strong>「はじめから やりなおす」</strong>で、進んだ面・ハート・ずかん・もちものをすべて最初に戻せます（購入の記録は消えません）。</p>
+                <p>記録は<strong>お使いの端末のなかにだけ</strong>保存されています。アプリを削除したり、端末を変えたりすると記録は残りませんので、ご了承ください。</p>
+              </div>
+            </details>
+          </div>
+        </section>
 
         <section class="card contact-section">
           <div class="card-header" style="justify-content: center;">
