@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サポート｜頭痛手帳</title>
+  <style>
+    /* 配色はアプリ（zutsurun の ux-design.md 2.2）に合わせる */
+    :root {
+      --font:      -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      --font-head: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      --theme:     #9E6557;
+      --theme-lt:  #EBD9D2;
+      --bg:        #F7F3EF;
+      --surface:   #FFFCF9;
+      --inset:     #EFE8E1;
+      --text:      #3B3431;
+      --text2:     #756A64;
+      --border:    #E3DAD2;
+      --r:         20px;
+      --r-sm:      12px;
+      --sh:        0 2px 12px rgba(117,106,100,.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --theme:    #D29B8C;
+        --theme-lt: #4A3833;
+        --bg:       #221E1C;
+        --surface:  #2C2725;
+        --inset:    #36302D;
+        --text:     #EDE6E0;
+        --text2:    #A89E97;
+        --border:   #463F3B;
+        --sh:       0 2px 12px rgba(0,0,0,.3);
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 16px 64px;
+      line-height: 1.8;
+    }
+
+    /* ── ヘッダー ── */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header .app-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
+      box-shadow: var(--sh);
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-family: var(--font-head);
+      font-weight: 500;
+      font-size: 1.7rem;
+      color: var(--text);
+      letter-spacing: .12em;
+    }
+
+    .header .tagline {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    /* ── タブナビゲーション ── */
+    .tab-nav {
+      max-width: 680px;
+      margin: 0 auto 28px;
+      display: flex;
+      gap: 8px;
+      background: var(--surface);
+      border-radius: var(--r);
+      padding: 8px;
+      box-shadow: var(--sh);
+    }
+
+    .tab-btn {
+      flex: 1;
+      font-family: var(--font);
+      font-size: 0.82rem;
+      color: var(--text2);
+      background: transparent;
+      border: none;
+      border-radius: calc(var(--r) - 6px);
+      padding: 10px 4px;
+      cursor: pointer;
+      transition: background .18s, color .18s;
+      line-height: 1.4;
+    }
+
+    .tab-btn.active {
+      background: var(--theme);
+      color: var(--surface);
+    }
+
+    .tab-btn:not(.active):hover {
+      background: var(--theme-lt);
+      color: var(--theme);
+    }
+
+    /* ── タブパネル ── */
+    .tab-panel { display: none; }
+
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── カード ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 26px 26px 22px;
+      box-shadow: var(--sh);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: var(--theme-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--theme);
+    }
+
+    .card h2 {
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .card p:last-child { margin-bottom: 0; }
+
+    .card strong { color: var(--theme); font-weight: 600; }
+
+    /* ── 箇条書き ── */
+    .policy-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .policy-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .policy-list li .dot {
+      flex-shrink: 0;
+      margin-top: 5px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--theme-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: var(--theme);
+      font-weight: bold;
+    }
+
+    /* ── 補足ボックス ── */
+    .highlight-box {
+      background: var(--inset);
+      border-radius: var(--r-sm);
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin-top: 14px;
+    }
+
+    /* ── プライバシーポリシー本文 ── */
+    .policy h3 {
+      font-size: 0.95rem;
+      margin: 22px 0 8px;
+      color: var(--text);
+    }
+
+    .policy h3:first-of-type { margin-top: 6px; }
+
+    .policy p { font-size: 0.88rem; }
+
+    .policy ul {
+      padding-left: 1.2em;
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+    }
+
+    .policy ul li + li { margin-top: 4px; }
+
+    .policy .dates {
+      margin-top: 22px;
+      font-size: 0.82rem;
+      color: var(--text2);
+      text-align: right;
+    }
+
+    /* ── よくある質問（アコーディオン） ── */
+    .faq-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .faq-group + .faq-group { margin-top: 22px; }
+
+    .faq-cat {
+      font-size: 0.8rem;
+      color: var(--theme);
+      letter-spacing: .08em;
+      margin-bottom: -2px;
+    }
+
+    .faq {
+      background: var(--inset);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+    }
+
+    .faq > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px 16px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .faq > summary::-webkit-details-marker { display: none; }
+
+    .faq > summary::before {
+      content: "Q";
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      border-radius: 50%;
+      background: var(--theme-lt);
+      color: var(--theme);
+      font-size: 0.65rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .faq > summary::after {
+      content: "";
+      flex-shrink: 0;
+      margin-left: auto;
+      margin-top: 7px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--theme);
+      border-bottom: 2px solid var(--theme);
+      transform: rotate(45deg);
+      transition: transform .2s;
+    }
+
+    .faq[open] > summary::after { transform: rotate(-135deg); margin-top: 10px; }
+
+    .faq .faq-a {
+      padding: 0 16px 14px 46px;
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.85;
+    }
+
+    .faq .faq-a p + p { margin-top: 8px; }
+
+    /* ── お問い合わせ ── */
+    .contact-section { text-align: center; }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--theme);
+      color: var(--surface);
+      font-family: var(--font);
+      font-size: 1rem;
+      padding: 14px 36px;
+      border-radius: 999px;
+      text-decoration: none;
+      margin-top: 6px;
+    }
+
+    .contact-btn:hover, .contact-btn:focus { opacity: .9; }
+
+    .contact-btn[aria-disabled="true"] {
+      background: var(--inset);
+      color: var(--text2);
+      pointer-events: none;
+    }
+
+    /* ── フッター ── */
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 20px 18px; }
+      .header h1 { font-size: 1.45rem; }
+      .tab-btn { font-size: 0.75rem; padding: 8px 2px; }
+      .faq > summary { font-size: 0.83rem; padding: 12px 13px; }
+      .faq .faq-a { padding: 0 13px 12px 42px; font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="header">
+    <img src="appIcon.png" alt="" class="app-logo">
+    <h1>頭痛手帳</h1>
+    <p class="tagline">気圧と痛み、痛み止めの日数を記録</p>
+  </header>
+
+  <div class="container">
+
+    <!-- タブナビゲーション -->
+    <nav class="tab-nav" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="support">サポート</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="contact">お問い合わせ</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" data-tab="privacy">プライバシー<br>ポリシー</button>
+    </nav>
+
+    <main>
+
+      <!-- ── サポートタブ ── -->
+      <div id="tab-support" class="tab-panel active" role="tabpanel">
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <h2>頭痛手帳について</h2>
+          </div>
+          <p>
+            「頭痛手帳」は、気圧の変化による頭痛や肩こり、生理痛などの痛みと、痛み止めの服薬を記録する手帳アプリです。
+          </p>
+          <p>
+            直近30日に痛み止めを飲んだ日数と、目安まで<strong>「あと何日」</strong>かを、数えなくても分かるようにしています。気圧の予報と記録を重ねて、ご自身の痛みの傾向をふり返れます。
+          </p>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <h2>できること</h2>
+          </div>
+          <ul class="policy-list">
+            <li>
+              <span class="dot">✓</span>
+              <span>ホームの<strong>「痛みを記録」</strong>から、痛みの種類と強さ（0〜10）を選ぶだけで記録できます。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>痛み止めを飲んだ日数を、<strong>直近30日</strong>で自動で数えます（同じ日に何回飲んでも1日）。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>現在地（または選んだ地域）の<strong>気圧と、これからの予報</strong>をグラフで表示します。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>「履歴」で、痛みと服薬の記録をカレンダーや一覧でふり返れます。「分析」では、気圧や時間帯との傾向（頭痛タイプの分析）を表示します。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>家族や友人と、痛みと服薬の記録を共有できます（任意・初期設定はオフ）。</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <h2>ご利用にあたって</h2>
+          </div>
+          <ul class="policy-list">
+            <li>
+              <span class="dot">✓</span>
+              <span>本アプリは、個人の記録のための手帳アプリです。<strong>医療機器ではありません</strong>。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>表示する日数や頭痛タイプは一般的な目安・参考情報で、診断や治療の代わりになるものではありません。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>薬の使い方や症状については、医師・薬剤師に相談してください。</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+            </div>
+            <h2>記録の保存について</h2>
+          </div>
+          <ul class="policy-list">
+            <li>
+              <span class="dot">✓</span>
+              <span>痛み・服薬の記録やプロフィールは、<strong>お使いの端末のなかにだけ保存</strong>されます。</span>
+            </li>
+            <li>
+              <span class="dot">✓</span>
+              <span>「設定」の「全データの削除」で、すべての記録と設定を消せます。</span>
+            </li>
+          </ul>
+          <div class="highlight-box">
+            ※ 記録は端末に紐づいています。機種変更の際の引き継ぎや、別の端末での利用はできませんのでご了承ください。
+          </div>
+        </section>
+
+      </div><!-- /#tab-support -->
+
+      <!-- ── お問い合わせタブ ── -->
+      <div id="tab-contact" class="tab-panel" role="tabpanel">
+
+        <section class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <h2>よくある質問</h2>
+          </div>
+
+          <div class="faq-group">
+            <p class="faq-cat">◆ 服薬の日数</p>
+
+            <details class="faq">
+              <summary>「あと何日」はどのように数えていますか？</summary>
+              <div class="faq-a">
+                <p>今日を含む直近30日のうち、痛み止めを飲んだ日を1日として数えます。同じ日に何回飲んでも1日です。日付の区切りは、端末の時刻の0時です。</p>
+                <p>目安の日数は、薬の区分（単一成分・複合・トリプタン系など）ごとに決めています。30日前の服薬が期間から外れると、1日分回復します。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>目安の日数は変えられますか？</summary>
+              <div class="faq-a">
+                <p>現在の版では、目安の日数は薬の区分ごとに決まっていて、変更できません。区分ごとの日数は、「管理」の「薬の管理」で各薬を開くと確認できます。</p>
+                <p>主治医から指示がある場合は、そちらを優先してください。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>目安の日数に達したら、記録できなくなりますか？</summary>
+              <div class="faq-a">
+                <p>いいえ。目安を超えても、記録はこれまでどおり続けられます。つらい日が続くときは、医師や薬剤師に相談してみてください。</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-group">
+            <p class="faq-cat">◆ 気圧</p>
+
+            <details class="faq">
+              <summary>気圧が表示されません</summary>
+              <div class="faq-a">
+                <p>気圧の予報の取得には、インターネットへの接続が必要です。通信できる場所で、もう一度アプリを開いてください。</p>
+                <p>位置情報の利用を許可していない場合は、「管理」の「気圧注意報」で「地域を選ぶ」から地域を選ぶと表示できます。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>位置情報は何に使われますか？</summary>
+              <div class="faq-a">
+                <p>気圧の予報を取得するためだけに使います。天気サービスに送るのは、約10km四方に丸めたおおまかな位置だけです。正確な位置や、健康に関する記録は送りません。</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq-group">
+            <p class="faq-cat">◆ 記録・仲間との共有</p>
+
+            <details class="faq">
+              <summary>機種変更したら、記録を引き継げますか？</summary>
+              <div class="faq-a">
+                <p>申し訳ありません。記録は端末のなかにだけ保存しているため、別の端末への引き継ぎはできません。アプリを削除した場合も、記録は消えます。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>仲間と共有すると、何が相手に見えますか？</summary>
+              <div class="faq-a">
+                <p>ご自身で共有をオンにした項目だけが、つながった仲間に届きます。届くのは、記録の日時、痛みの種類と強さ、薬の区分、表示名です。</p>
+                <p>薬の名前やメモ、位置情報は共有されません。共有はいつでもオフにしたり、つながりを解除したりできます。</p>
+              </div>
+            </details>
+
+            <details class="faq">
+              <summary>記録をすべて消したい</summary>
+              <div class="faq-a">
+                <p>「設定」の<strong>「全データの削除」</strong>から、記録・設定を含むすべてのデータを削除できます。削除したデータは元に戻せませんので、ご注意ください。</p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="card contact-section">
+          <div class="card-header" style="justify-content: center;">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <h2>お問い合わせ</h2>
+          </div>
+          <p style="text-align:center; margin-bottom:16px;">
+            ご不明な点・ご意見・不具合のご報告は、下記フォームよりお問い合わせください。<br>
+            症状や薬の使い方についてのご相談にはお答えできませんので、医師・薬剤師にご相談ください。
+          </p>
+          <!-- TODO：Google フォームを用意したら href を差し替え、aria-disabled を外す -->
+          <a href="#contact" class="contact-btn" aria-disabled="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>お問い合わせフォーム（準備中）</span>
+          </a>
+        </section>
+
+      </div><!-- /#tab-contact -->
+
+      <!-- ── プライバシーポリシータブ ── -->
+      <!-- 本文はアプリ内の src/config/privacyPolicy.ts と同じ内容にそろえる -->
+      <div id="tab-privacy" class="tab-panel" role="tabpanel">
+
+        <section class="card policy">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <h2>プライバシーポリシー</h2>
+          </div>
+
+          <p>本アプリ「頭痛手帳」（以下「本アプリ」）は、利用者のプライバシーを最優先に設計しています。本ポリシーは、本アプリがどのような情報を、どのように扱うかを説明するものです。</p>
+
+          <h3>1. 基本的な考え方</h3>
+          <p>本アプリは、記録した健康に関する情報（痛み・肩こり・生理痛などの記録、服薬の記録、プロフィール）を、原則としてお使いの端末の中だけに保存します。これらの情報を、私たちのサーバーや第三者へ送信・収集することはありません。</p>
+
+          <h3>2. 取得する情報について（個人情報について）</h3>
+          <p>本アプリで扱う情報は次のとおりです。</p>
+          <ul>
+            <li>利用者が入力する情報：痛み・服薬などの記録、痛みの種類やタグ、薬の情報、性別などのプロフィール、各種設定。</li>
+            <li>位置情報：気圧予報を取得するために利用します（詳しくは第4項）。</li>
+            <li>仲間機能を使う場合の情報：表示名、および共有をオンにした記録（詳しくは第6項）。</li>
+          </ul>
+          <p>本アプリは、氏名・メールアドレス・電話番号などの連絡先を取得しません。仲間機能のアカウントも、メールアドレス不要のID・パスワードのみで作成できます。</p>
+
+          <h3>3. データの保存について</h3>
+          <p>入力された記録・設定・プロフィールは、お使いの端末内（ブラウザのローカルストレージ、iOS版では端末内の保存領域）に保存されます。</p>
+          <p>これらの健康に関する情報を、外部サーバーへ送信・保管することはありません（天気APIへ送る、丸めた位置情報を除く。第4項）。</p>
+          <p>端末の紛失・故障・データ削除などにより、記録が失われる場合があります。バックアップは利用者ご自身の管理となります。</p>
+
+          <h3>4. 位置情報の取り扱い</h3>
+          <p>気圧予報の取得のために、位置情報を利用します。</p>
+          <p>天気サービスに送信するのは、精度を粗く丸めた緯度・経度のみです（小数第1位＝約10km四方）。正確な位置や、健康に関する情報は送信しません。</p>
+          <p>位置情報を本アプリ内に保存し続けることはなく、天気の問い合わせにのみ使用します。</p>
+          <p>位置情報の利用を許可しない場合でも、気圧予報以外の機能はご利用いただけます。</p>
+
+          <h3>5. 広告・外部サービスについて</h3>
+          <p>現在の版では、広告を表示しません。無料でご利用いただけます。今後、広告を掲載する版を提供する場合は、事前に本ポリシーを改定してお知らせします。</p>
+          <p>本アプリが利用する外部サービスは、気圧予報の取得先である Open-Meteo（api.open-meteo.com）です。同サービスには第4項の丸めた位置情報のみを送信します。同サービスでの情報の取り扱いは、提供元のポリシーに従います。</p>
+          <p>アクセス解析・行動追跡（トラッキング）のためのツールは使用していません。</p>
+
+          <h3>6. 仲間との共有について</h3>
+          <p>仲間機能は任意です。初期状態ではすべての共有がオフになっており、利用者が明示的にオンにした場合のみ共有されます。</p>
+          <p>共有される情報は、共有の目的に必要な最小限に限られます（記録の種類〈痛み／服薬〉、日時、痛みの種類・強さ、薬の区分、表示名）。メモなどの自由記述や、位置情報は共有されません。</p>
+          <p>共有機能を使う場合、共有した情報はつながった仲間に届けるため、当社のサーバー（Cloudflare 上のサービス）を経由して保管されます。共有をオフにする、仲間とのつながりを解除する、記録を削除する（相手側からも消える）ことができます。</p>
+
+          <h3>7. 第三者への提供について</h3>
+          <p>本アプリは、法令に基づく場合を除き、利用者の情報を第三者へ提供・販売しません。前各項に記載した、気圧予報の取得（丸めた位置情報）および仲間機能（利用者が同意した共有）を除きます。</p>
+
+          <h3>8. データの削除と利用者の権利</h3>
+          <p>アプリ内の「設定 → 全データの削除」から、記録・設定を含むすべてのデータをいつでも削除できます。</p>
+          <p>アプリを削除（アンインストール）した場合も、端末内のデータは削除されます。</p>
+
+          <h3>9. お子さまのプライバシー</h3>
+          <p>本アプリは、13歳以上の方のご利用を対象としています。13歳未満の方を対象に個人情報を収集することを目的としていません。</p>
+
+          <h3>10. ポリシーの変更について</h3>
+          <p>本ポリシーは、必要に応じて改定することがあります。改定した場合は、このページおよびアプリ内に掲載します。</p>
+
+          <h3>11. お問い合わせ</h3>
+          <p>本ポリシーに関するお問い合わせは、このページの「お問い合わせ」タブからお願いいたします。</p>
+
+          <p class="dates">
+            提供者：頭痛手帳 運営<br>
+            制定日：2026年9月20日<br>
+            最終改定日：2026年9月20日
+          </p>
+        </section>
+
+      </div><!-- /#tab-privacy -->
+
+    </main>
+  </div><!-- /.container -->
+
+  <!-- フッター -->
+  <footer class="footer">
+    <p>&copy; 2026 頭痛手帳</p>
+  </footer>
+
+  <script>
+    const buttons = document.querySelectorAll('.tab-btn');
+
+    function activateTab(tabName) {
+      const validTabs = ['support', 'contact', 'privacy'];
+      const target = validTabs.includes(tabName) ? tabName : 'support';
+
+      buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+      const btn = document.querySelector('.tab-btn[data-tab="' + target + '"]');
+      if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected', 'true'); }
+      const panel = document.getElementById('tab-' + target);
+      if (panel) panel.classList.add('active');
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        history.pushState(null, '', '#' + btn.dataset.tab);
+        activateTab(btn.dataset.tab);
+      });
+    });
+
+    window.addEventListener('hashchange', () => {
+      activateTab(location.hash.slice(1));
+    });
+
+    // 初期表示：URLハッシュに応じてタブを切り替え
+    activateTab(location.hash.slice(1));
+  </script>
+
+</body>
+</html>
